@@ -25,6 +25,8 @@ app.use('/api/v1/post', postRoute);
 app.use('/api/v1/photo', photoRoute);
 app.use('/api/v1/album', albumRoute);
 
+app.use('/', postRoute);
+
 // unhandled routes
 app.all('*', (req, res, next) => {
     const err = new Error('The route not found');
