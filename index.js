@@ -36,7 +36,6 @@ app.all('*', (req, res, next) => {
 
 app.use(errorHandler);
 
-const port = process.env.APP_PORT;
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
+app.listen(5001, () => {
+    console.log(`Server is running on port 5001`)
 });
