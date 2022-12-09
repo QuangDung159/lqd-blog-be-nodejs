@@ -25,7 +25,12 @@ app.use('/api/v1/post', postRoute);
 app.use('/api/v1/photo', photoRoute);
 app.use('/api/v1/album', albumRoute);
 
-app.use('/', postRoute);
+app.use('/', (req, res, next) => {
+    res.statusCode = 200;
+    res.json({
+        appName: 'lqd-blog-backend-nodejs'
+    })
+});
 
 // unhandled routes
 app.all('*', (req, res, next) => {
