@@ -8,14 +8,6 @@ const getAll = async (req, res, next) => {
         const allPost = await Post.find({})
             .populate('post_created_by', 'user_name')
             .populate('album', 'album_name album_desc')
-            .populate({
-                path: 'comments',
-                select: 'content createdAt',
-                populate: {
-                    path: 'user',
-                    select: 'user_name'
-                }
-            })
             .sort([['createdAt', -1]]);
 
         // let total = 0;
@@ -38,7 +30,15 @@ const getOne = async (req, res, next) => {
         const { postId } = req.params;
         const post = await Post.findById(postId)
             .populate('post_created_by', 'user_name')
-            .populate('album', 'album_name album_desc');
+            .populate('album', 'album_name album_desc')
+            .populate({
+                path: 'comments',
+                select: 'content createdAt',
+                populate: {
+                    path: 'user',
+                    select: 'user_name'
+                }
+            });
         if (!post) {
             const err = new Error('Post not found');
             err.statusCode = 404;
