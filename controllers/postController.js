@@ -8,7 +8,14 @@ const getAll = async (req, res, next) => {
         const allPost = await Post.find({})
             .populate('post_created_by', 'user_name')
             .populate('album', 'album_name album_desc')
-            .populate('comments', 'user content createdAt')
+            .populate({
+                path: 'comments',
+                select: 'content createdAt',
+                populate: {
+                    path: 'user',
+                    select: 'user_name'
+                }
+            })
             .sort([['createdAt', -1]]);
 
         // let total = 0;
