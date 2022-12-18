@@ -39,6 +39,10 @@ const postSchema = new mongoose.Schema({
     album: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Album'
+    },
+    post_likes: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true

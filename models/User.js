@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Password required'],
         minLength: [6, 'Password must be at least 6']
     },
+    user_type: {
+        type: String,
+        trim: true,
+        default: 'viewer' // admin
+    }
 }, {
     timestamps: true
 });
