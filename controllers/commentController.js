@@ -1,7 +1,7 @@
 const { json } = require('express');
 const Comment = require('../models/Comment');
 const ReplyController = require('../controllers/replyController');
-const { resBuilder } = require('../utils/helper');
+const { resBuilder, checkIsOwn } = require('../utils/helper');
 
 const createOne = async (req, res, next) => {
     try {
@@ -62,7 +62,7 @@ const deleteOne = async (req, res, next) => {
         // check comment exist
         const comment = await Comment.findById(commentId).populate({
             path: 'replies'
-        });
+        }).populate('user');
         if (!comment) {
             const err = new Error('Comment not found');
             err.statusCode = 400
@@ -73,14 +73,14 @@ const deleteOne = async (req, res, next) => {
         const replies = comment.replies;
 
         // check current user own comment
-        // const { userId } = req.user;
-        // const isOwnPhoto = checkAuthorOwnPhoto(userId, photo);
-        // if (isOwnPhoto) {
-        //     const err = new Error('Cannot delete photo of other author');
-        //     err.statusCode = 403
-        //     next(err);
-        //     return;
-        // }
+        const { userId } = req.user;
+        const isOwn = checkIsOwn(userId, comment.user);
+        if (isOwn) {
+            const err = new Error('Cannot delete comment of other user');
+            err.statusCode = 403
+            next(err);
+            return;
+        }
 
         // delete comment
         const deleteCommentRes = await Comment.deleteOne({ _id: commentId });

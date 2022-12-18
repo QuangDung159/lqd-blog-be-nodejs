@@ -18,4 +18,8 @@ const handleColumnName = (colName) => {
     return str[0].toUpperCase() + str.substring(1);
 }
 
-module.exports = { resBuilder, handleColumnName };
+const checkIsOwn = (id, obj) => {
+    return id !== obj._id.toString();
+}
+
+module.exports = { resBuilder, handleColumnName, checkIsOwn };
