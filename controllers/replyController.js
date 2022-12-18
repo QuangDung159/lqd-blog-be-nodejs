@@ -1,6 +1,6 @@
 const { json } = require('express');
 const Reply = require('../models/Reply');
-const { resBuilder } = require('../utils/helper');
+const { resBuilder, checkIsOwn } = require('../utils/helper');
 
 const createOne = async (req, res, next) => {
     try {
@@ -19,7 +19,7 @@ const createOne = async (req, res, next) => {
 const updateOne = async (req, res, next) => {
     try {
         const replyId = req.params.replyId;
-        
+
         // check reply exist
         const reply = await Reply.findById(replyId);
         if (!reply) {
@@ -59,7 +59,13 @@ const deleteOne = async (req, res, next) => {
         const replyId = req.params.replyId;
 
         // check reply exist
-        const reply = await Reply.findById(replyId);
+        const reply = await Reply.findById(replyId).populate({
+            path: 'comment',
+            populate: {
+                path: 'user',
+                select: 'user_name'
+            }
+        }).populate('user', 'user_name');
         if (!reply) {
             const err = new Error('Reply not found');
             err.statusCode = 400
@@ -67,19 +73,22 @@ const deleteOne = async (req, res, next) => {
             return;
         }
 
-        // check current user own comment
-        // const { userId } = req.user;
-        // const isOwnPhoto = checkAuthorOwnPhoto(userId, photo);
-        // if (isOwnPhoto) {
-        //     const err = new Error('Cannot delete photo of other author');
-        //     err.statusCode = 403
-        //     next(err);
-        //     return;
-        // }
+        // check current user own reply or own comment
+        const { userId } = req.user;
+        const isOwnReply = checkIsOwn(userId, reply.user);
 
-        // delete
-        await Reply.deleteOne({ _id: replyId });
-        const response = resBuilder('success', { result: 1 }, 'Remove reply successfully');
+        // user who own comment can delete replies on that comment
+        const isOwnComment = checkIsOwn(userId, reply.comment.user);
+        if (!isOwnReply && !isOwnComment) {
+            const err = new Error('Cannot delete reply of other user');
+            err.statusCode = 403
+            next(err);
+            return;
+        }
+
+        // // delete
+        // await Reply.deleteOne({ _id: replyId });
+        const response = resBuilder('success', { result: 1, reply }, 'Remove reply successfully');
         res.status(200).json(response);
     } catch (error) {
         next(error);

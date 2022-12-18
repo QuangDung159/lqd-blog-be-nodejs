@@ -75,7 +75,7 @@ const deleteOne = async (req, res, next) => {
         // check current user own comment
         const { userId } = req.user;
         const isOwn = checkIsOwn(userId, comment.user);
-        if (isOwn) {
+        if (!isOwn) {
             const err = new Error('Cannot delete comment of other user');
             err.statusCode = 403
             next(err);

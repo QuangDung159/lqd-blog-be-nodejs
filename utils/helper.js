@@ -19,7 +19,7 @@ const handleColumnName = (colName) => {
 }
 
 const checkIsOwn = (id, obj) => {
-    return id !== obj._id.toString();
+    return id === obj._id.toString();
 }
 
 module.exports = { resBuilder, handleColumnName, checkIsOwn };
