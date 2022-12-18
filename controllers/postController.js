@@ -35,9 +35,21 @@ const getOne = async (req, res, next) => {
                 path: 'comments',
                 select: 'content createdAt',
                 populate: {
+                    path: 'replies',
+                    populate: {
+                        path: 'user',
+                        select: 'user_name'
+                    },
+                    select: 'content'
+                }
+            })
+            .populate({
+                path: 'comments',
+                populate: {
                     path: 'user',
                     select: 'user_name'
-                }
+                },
+                select: 'content'
             });
         if (!post) {
             const err = new Error('Post not found');

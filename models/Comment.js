@@ -14,8 +14,17 @@ const commentSchema = new mongoose.Schema({
         required: [true, 'Content is required']
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: {
+        virtuals: true
+    }
 });
+
+commentSchema.virtual('replies', {
+    ref: 'Reply',
+    foreignField: 'comment',
+    localField: '_id'
+})
 
 const Comment = mongoose.model('Comment', commentSchema);
 

@@ -1,15 +1,15 @@
 const { json } = require('express');
-const Comment = require('../models/Comment');
+const Reply = require('../models/Reply');
 const { resBuilder } = require('../utils/helper');
 
 const createOne = async (req, res, next) => {
     try {
         const { userId } = req.user;
-        let comment = await Comment.create({
+        let reply = await Reply.create({
             ...req.body, user: userId
         });
-        comment = await (await comment.populate('user', 'user_name')).populate('post', '');
-        const response = resBuilder('success', { comment, result: 1 }, 'Submit comment successfully');
+        reply = await Reply.populate('user', 'user_name');
+        const response = resBuilder('success', { reply, result: 1 }, 'Submit reply successfully');
         res.status(201).json(response);
     } catch (error) {
         next(error);
@@ -18,12 +18,12 @@ const createOne = async (req, res, next) => {
 
 const updateOne = async (req, res, next) => {
     try {
-        const commentId = req.params.commentId;
-
-        // check comment exist
-        const comment = await Comment.findById(commentId);
-        if (!comment) {
-            const err = new Error('Comment not found');
+        const replyId = req.params.replyId;
+        
+        // check reply exist
+        const reply = await Reply.findById(replyId);
+        if (!reply) {
+            const err = new Error('Reply not found');
             err.statusCode = 400
             next(err);
             return;
@@ -39,15 +39,15 @@ const updateOne = async (req, res, next) => {
         //     return;
         // }
 
-        // process update comment
-        const commentUpdated = await Comment.findOneAndUpdate({ _id: commentId }, {
+        // process update reply
+        const replyUpdated = await Reply.findOneAndUpdate({ _id: replyId }, {
             ...req.body
         }, {
             new: true,
             runValidators: true
-        }).populate('user', 'user_name').populate('post', '_id');
+        }).populate('user', 'user_name').populate('comment', '_id content');
 
-        const response = resBuilder('success', { comment: commentUpdated, result: 1 }, 'Update comment successfully');
+        const response = resBuilder('success', { reply: replyUpdated, result: 1 }, 'Update reply successfully');
         res.status(200).json(response);
     } catch (error) {
         next(error);
@@ -56,12 +56,12 @@ const updateOne = async (req, res, next) => {
 
 const deleteOne = async (req, res, next) => {
     try {
-        const commentId = req.params.commentId;
+        const replyId = req.params.replyId;
 
-        // check comment exist
-        const comment = await Comment.findById(commentId);
-        if (!comment) {
-            const err = new Error('Comment not found');
+        // check reply exist
+        const reply = await Reply.findById(replyId);
+        if (!reply) {
+            const err = new Error('Reply not found');
             err.statusCode = 400
             next(err);
             return;
@@ -78,8 +78,8 @@ const deleteOne = async (req, res, next) => {
         // }
 
         // delete
-        await Comment.deleteOne({ _id: commentId });
-        const response = resBuilder('success', { result: 1 }, 'Remove comment successfully');
+        await Reply.deleteOne({ _id: replyId });
+        const response = resBuilder('success', { result: 1 }, 'Remove reply successfully');
         res.status(200).json(response);
     } catch (error) {
         next(error);
