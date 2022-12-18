@@ -96,7 +96,7 @@ const updateOne = async (req, res, next) => {
         // check current user own post
         const { userId } = req.user;
         const isOwnPost = checkAuthorOwnPost(userId, post);
-        if (isOwnPost) {
+        if (!isOwnPost) {
             const err = new Error('Cannot update post of other author');
             err.statusCode = 403
             next(err);
@@ -136,7 +136,7 @@ const deleteOne = async (req, res, next) => {
         // check current user own post
         const { userId } = req.user;
         const isOwnPost = checkAuthorOwnPost(userId, post);
-        if (isOwnPost) {
+        if (!isOwnPost) {
             const err = new Error('Cannot delete post of other author');
             err.statusCode = 403
             next(err);

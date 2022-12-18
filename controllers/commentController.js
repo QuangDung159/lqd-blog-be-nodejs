@@ -30,16 +30,6 @@ const updateOne = async (req, res, next) => {
             return;
         }
 
-        // check current user own photo
-        // const { userId } = req.user;
-        // const isOwnPhoto = checkAuthorOwnPhoto(userId, photo);
-        // if (isOwnPhoto) {
-        //     const err = new Error('Cannot update photo of other author');
-        //     err.statusCode = 403
-        //     next(err);
-        //     return;
-        // }
-
         // process update comment
         const commentUpdated = await Comment.findOneAndUpdate({ _id: commentId }, {
             ...req.body
