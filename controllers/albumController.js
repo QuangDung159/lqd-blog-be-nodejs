@@ -64,7 +64,7 @@ const updateOne = async (req, res, next) => {
         // check current user own album
         const { userId } = req.user;
         const isOwnAlbum = checkAuthorOwnAlbum(userId, album);
-        if (isOwnAlbum) {
+        if (!isOwnAlbum) {
             const err = new Error('Cannot update album of other author');
             err.statusCode = 403
             next(err);
@@ -102,7 +102,7 @@ const deleteOne = async (req, res, next) => {
         // check current user own album
         const { userId } = req.user;
         const isOwnAlbum = checkAuthorOwnAlbum(userId, album);
-        if (isOwnAlbum) {
+        if (!isOwnAlbum) {
             const err = new Error('Cannot delete album of other author');
             err.statusCode = 403
             next(err);

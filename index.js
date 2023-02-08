@@ -9,6 +9,9 @@ const authRoute = require('./routes/authRoute');
 const postRoute = require('./routes/postRoute');
 const photoRoute = require('./routes/photoRoute');
 const albumRoute = require('./routes/albumRoute');
+const commentRoute = require('./routes/commentRoute');
+const replyRoute = require('./routes/replyRoute');
+const appConfigRoute = require('./routes/appConfigRoute');
 
 connectDB();
 const app = express();
@@ -24,6 +27,9 @@ app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/post', postRoute);
 app.use('/api/v1/photo', photoRoute);
 app.use('/api/v1/album', albumRoute);
+app.use('/api/v1/comment', commentRoute);
+app.use('/api/v1/reply', replyRoute);
+app.use('/api/v1/app-config', appConfigRoute);
 
 app.use('/', (req, res, next) => {
     res.statusCode = 200;

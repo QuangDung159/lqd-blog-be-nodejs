@@ -39,10 +39,23 @@ const postSchema = new mongoose.Schema({
     album: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Album'
+    },
+    post_likes: {
+        type: Number,
+        default: 0
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: {
+        virtuals: true
+    }
 });
+
+postSchema.virtual('comments', {
+    ref: 'Comment',
+    foreignField: 'post',
+    localField: '_id'
+})
 
 const Post = mongoose.model('Post', postSchema);
 

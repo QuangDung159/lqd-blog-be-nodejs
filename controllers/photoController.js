@@ -64,7 +64,7 @@ const updateOne = async (req, res, next) => {
         // check current user own photo
         const { userId } = req.user;
         const isOwnPhoto = checkAuthorOwnPhoto(userId, photo);
-        if (isOwnPhoto) {
+        if (!isOwnPhoto) {
             const err = new Error('Cannot update photo of other author');
             err.statusCode = 403
             next(err);
@@ -102,7 +102,7 @@ const deleteOne = async (req, res, next) => {
         // check current user own photo
         const { userId } = req.user;
         const isOwnPhoto = checkAuthorOwnPhoto(userId, photo);
-        if (isOwnPhoto) {
+        if (!isOwnPhoto) {
             const err = new Error('Cannot delete photo of other author');
             err.statusCode = 403
             next(err);
